@@ -31,7 +31,7 @@ struct VistaFlotante1View: View {
             .padding()
             .background(.ultraThinMaterial)
             .cornerRadius(30)
-            .shadow(color: .black.opacity(0.8), radius: 15, x: 0, y: 15)
+            .shadow(color: .black.opacity(0.8), radius: 15, x: 0, y: 10)
             // esto de momento bugea y no hace el efecto que deberia por lo tanto lo anulo de momento, si cambio el material de fondo que no sea un material si funciona correctamente
 //            .rotation3DEffect(
 //                .degrees(10),
