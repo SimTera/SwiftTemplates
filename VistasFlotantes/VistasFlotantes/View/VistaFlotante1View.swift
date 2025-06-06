@@ -2,6 +2,9 @@
 //  VistaFlotante1View.swift
 //  VistasFlotantes
 //
+//  Vista de ejemplo con fondo degradado y un panel flotante central.
+//  Inspirada en el estilo de VisionOS, usando material borroso y profundidad visual.
+//
 //  Created by Victor Munera on 3/6/25.
 //
 import SwiftUI
@@ -9,7 +12,7 @@ import SwiftUI
 struct VistaFlotante1View: View {
     var body: some View {
         ZStack {
-            // Fondo degradado
+            // Fondo degradado de azul a purpura que cubre toda la pantalla
             LinearGradient(
                 colors: [Color.blue.opacity(0.7), Color.purple.opacity(0.8)],
                 startPoint: .topTrailing,
@@ -17,7 +20,7 @@ struct VistaFlotante1View: View {
             )
             .ignoresSafeArea()
             
-            // Vista flotante
+            // Panel flotante central
             
             VStack(spacing: 16){
                 Text("Vista Flotante de Prueba")
@@ -29,11 +32,11 @@ struct VistaFlotante1View: View {
                     .padding(.horizontal)
             }
             .padding()
-            .background(.ultraThinMaterial)
+            .background(.ultraThinMaterial) // Efecto borroso tipo visionOS
             .cornerRadius(30)
             .shadow(color: .black.opacity(0.8), radius: 15, x: 0, y: 10)
-            // esto de momento bugea y no hace el efecto que deberia por lo tanto lo anulo de momento, si cambio el material de fondo que no sea un material si funciona correctamente
-//            .rotation3DEffect(
+            
+//            .rotation3DEffect( // Comentado: puede dar problemas visuales con el material
 //                .degrees(10),
 //                axis: (x: 1, y: -0.5, z: 0)
 //            )

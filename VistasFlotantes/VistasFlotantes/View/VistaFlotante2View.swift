@@ -2,12 +2,15 @@
 //  VistaFlotante2View.swift
 //  VistasFlotantes
 //
+//  Ejemplo de scroll horizontal con tarjetas tipo carta, usando material borroso y sombras.
+//
 //  Created by Victor Munera on 3/6/25.
 //
 import SwiftUI
 
 struct VistaFlotante2View: View {
     
+    // Lista de textos para las tarjetas
     let textos = [
         "Recomendación 1",
         "Recomendación 2",
@@ -20,8 +23,10 @@ struct VistaFlotante2View: View {
     
     var body: some View {
         ZStack {
+            // Fondo oscuro para resaltar las tarjetas
             Color.black.opacity(0.9).ignoresSafeArea()
             
+            // Scroll horizontal de tarjetas
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack() { // negativo para solaparlas como baraja
                     ForEach(0..<textos.count, id: \.self) { index in
@@ -37,6 +42,7 @@ struct VistaFlotante2View: View {
     }
 }
 
+// Vista reutilizable para cada tarjeta
 struct CardView: View {
     let texto: String
     

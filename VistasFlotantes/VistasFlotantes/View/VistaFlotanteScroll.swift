@@ -2,26 +2,35 @@
 //  VistaFlotanteScroll.swift
 //  VistasFlotantes
 //
+//  Ejemplo avanzado de scrolls y grids con cartas flotantes, efectos de profundidad y escalado dinámico.
+//  Ideal para aprender ScrollView, LazyVGrid, GeometryReader y animaciones en SwiftUI.
+//
 //  Created by Victor Munera on 3/6/25.
 //
 import SwiftUI
 
 struct VistaFlotanteScroll: View {
-    @State private var selectedCard: Int = 0 // Carta seleccionada al inicio
-
     
+    // MARK: - Estado
+    // Índice de la carta seleccionada para el scroll con imán
+    @State private var selectedCard: Int = 0
+
+    // MARK: - Vista principal
     var body: some View {
         ZStack {
+            // Fondo degradado para dar profundidad y color
             LinearGradient(
                 colors: [Color.mint, Color.blue],
                 startPoint: .topTrailing,
                 endPoint: .bottomLeading
             )
             .ignoresSafeArea()
+            
+            // Scroll vertical principal
             ScrollView(.vertical, showsIndicators: false) {
-                
                 VStack(alignment: .leading, spacing: 24) {
                     
+                    // MARK: - Encabezado
                     // 🟦 Sección normal en vertical
                     Text("Bienvenido a Pruebas de Vistas Flotantes")
                         .font(.largeTitle)
@@ -31,6 +40,9 @@ struct VistaFlotanteScroll: View {
                     Text("Aquí tienes algunas recomendaciones y vistas flotantes")
                         .font(.subheadline)
                         .padding(.horizontal)
+                    
+                    // MARK: - Cartas verticales simples
+                    // Ejemplo de uso de vistas tipo carta una debajo de otra
                     CartaView(texto: "Primera carta")
                         .padding(.horizontal)
                     CardView(texto: "Otra esta viene de otro proyecto")
@@ -42,12 +54,13 @@ struct VistaFlotanteScroll: View {
                     CartaView(texto: "Y otra")
                         .padding(.horizontal)
                     
-                    // 🟥 Sección con scroll horizontal
+                    // MARK: - 🟥 Sección con scroll horizontal simple
                     Text("Vistas tipo cartas")
                         .font(.title2)
                         .bold()
                         .padding(.horizontal)
                     
+                    // Scroll horizontal con cartas apiladas
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 20) {
                             ForEach(0..<10) { i in
@@ -94,7 +107,7 @@ struct VistaFlotanteScroll: View {
                         .padding(.horizontal)
                     }
                     
-                    // Estructura tipo Grid
+                    // MARK: - 🟨 Estructura tipo Grid
                     
                     Text("Vista tipo grid")
                         .font(.title2)
@@ -113,40 +126,48 @@ struct VistaFlotanteScroll: View {
                     }
                     .padding()
                     
-                    // Scroll horizontal carta central mas grande
+                    // MARK: - Scroll horizontal con cartas que crecen al estar centradas
                     
                     Text("Vista horizontal la carta central crecerá con el scroll")
                         .font(.title2)
                         .bold()
                         .padding()
+                    
+                    // Scroll horizontal donde la carta central se resalta usando GeometryReader
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 20) {
                             ForEach(0..<10) { i in
                                 GeometryReader { geo in
                                     CartaView(texto: "Carta \(i)")
+                                    // Escala la carta según su posición en pantalla
                                         .scaleEffect(getScale(geo: geo))
+                                    // Cambia la opacidad para dar efecto de profundidad
                                         .opacity(getOpacity(geo: geo))
-                                        .zIndex(getZIndex(geo: geo)) // 👈 Esto es opcional para que la central esté "por encima"
+                                    // Cambia el zIndex para que la carta central esté encima
+                                        .zIndex(getZIndex(geo: geo)) // 👈 opcional para que la central esté "por encima"
                                 }
                                 .frame(width: 200, height: 140)
                             }
                             
                         }
+                        // Centrado horizontal para que la carta central esté en el medio de la pantalla
                         .padding(.horizontal, UIScreen.main.bounds.width / 2 - 100) // 👈 Esto es clave para que se centren todas las cartas
                         .frame(height: 160)
                     }
                     
-                    // Probando Scroll lateral mas centrado y ampliado como con iman
+                    // MARK: - Scroll horizontal con centrado tipo imán
                     Text("Scroll lateral con centrado como con iman")
                         .font(.title2)
                         .bold()
                         .padding()
+                    // Scroll horizontal que centra la carta seleccionada al pulsar (efecto imán)
                     ScrollViewReader { proxy in
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 20) {
-                                // espacio antes de la primera carta
+                                // Espaciador para centrar la primera carta
                                 Spacer()
                                     .frame(width: UIScreen.main.bounds.width / 2 - 100)
+                                
                                 // lista de cartaas
                                 ForEach(0..<10) { i in
                                     GeometryReader { geo in
@@ -168,6 +189,7 @@ struct VistaFlotanteScroll: View {
                                             .offset(y: isCenter ? -10 : 0)
                                             .animation(.spring(response: 0.4, dampingFraction: 0.75), value: scale)
                                             .onTapGesture {
+                                                // Al pulsar, actualiza la carta seleccionada y centra el scroll
                                                 selectedCard = i
                                                 withAnimation(.spring()) {
                                                     proxy.scrollTo(i, anchor: .center)
@@ -177,13 +199,14 @@ struct VistaFlotanteScroll: View {
                                     }
                                     .frame(width: 200, height: 140)
                                 }
-                                // 👉 Espacio después de la última carta
+                                //  Espaciador para centrar la última carta
                                             Spacer()
                                                 .frame(width: UIScreen.main.bounds.width / 2 - 100)
                             }
                             .padding(.horizontal)
                             .frame(height: 180)
                         }
+                        // Al aparecer la vista, centra la carta seleccionada
                         .onAppear {
                             DispatchQueue.main.async {
                                 proxy.scrollTo(selectedCard, anchor: .center)
@@ -198,6 +221,7 @@ struct VistaFlotanteScroll: View {
     }
 }
 
+// MARK: - Vista tipo carta reutilizable
 struct CartaView: View {
     let texto: String
     
@@ -213,7 +237,11 @@ struct CartaView: View {
         .shadow(color: .black.opacity(0.75), radius: 5, x: 0, y: 10)
     }
 }
-// Funciones para hacer la vista tipo carta que se mueve
+
+// MARK: - Funciones auxiliares para efectos de escala, opacidad y profundidad en las cartas
+
+// Funciones para la sección de cartas apiladas dinámicamente (rotación y escala)
+/// Escala la carta central para resaltarla visualmente
 func getScale1(geo1: GeometryProxy) -> CGFloat {
     let midX = geo1.frame(in: .global).midX
     let screenMidX = UIScreen.main.bounds.width / 2
@@ -222,6 +250,7 @@ func getScale1(geo1: GeometryProxy) -> CGFloat {
     return scale
 }
 
+/// Cambia la opacidad según la distancia al centro de la pantalla
 func getOpacity1(geo1: GeometryProxy) -> Double {
     let midX = geo1.frame(in: .global).midX
     let screenMidX = UIScreen.main.bounds.width / 2
@@ -230,7 +259,7 @@ func getOpacity1(geo1: GeometryProxy) -> Double {
     return opacity
 }
 
-// Funciones para que se levante la carta del medio que se haga mas grande
+// Funciones para la sección donde la carta central crece y se eleva
 func getScale(geo: GeometryProxy) -> CGFloat {
     let midX = geo.frame(in: .global).midX
     let screenMidX = UIScreen.main.bounds.width / 2
@@ -246,6 +275,7 @@ func getOpacity(geo: GeometryProxy) -> Double {
     return Double(max(0.5, 1 - diff / 400))
 }
 
+/// Cambia el zIndex para que la carta central esté por encima de las demás
 func getZIndex(geo: GeometryProxy) -> Double {
     let midX = geo.frame(in: .global).midX
     let screenMidX = UIScreen.main.bounds.width / 2
